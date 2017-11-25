@@ -32,6 +32,22 @@ const injectBabelPlugin = function(pluginName, config) {
   return config;
 };
 
+const fileLoaderMatcher = function(rule) {
+  return rule.loader && typeof rule.loader === 'string' && rule.loader.indexOf(`${path.sep}file-loader${path.sep}`) !== -1;
+}
+
+const getFileLoader = function(rules) {
+  return getLoader(rules, fileLoaderMatcher);
+}
+
+const cssRulesMatcher = function(rule) {
+  return String(rule.test) === String(/\.css$/);
+}
+
+const getCssRules = function(rules) {
+  return getLoader(rules, cssRulesMatcher);
+}
+
 const compose = function(...funcs) {
   if (funcs.length === 0) {
     return config => config;
@@ -44,4 +60,11 @@ const compose = function(...funcs) {
   return funcs.reduce((a, b) => (config, env) => a(b(config, env), env));
 };
 
-module.exports = { getLoader, getBabelLoader, injectBabelPlugin, compose };
+module.exports = { 
+  getLoader,
+  getBabelLoader,
+  injectBabelPlugin,
+  getFileLoader,
+  getCssRules,
+  compose 
+};
